@@ -21,6 +21,7 @@ const FoodCart = ({ navigation, route }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  console.log(user)
   console.log("User her:", user?.userProfInfo?.userProfData);
   const foodData = useSelector((state) => state.api);
   const foodItems = useSelector((state) => state.addFood);
@@ -48,6 +49,7 @@ const FoodCart = ({ navigation, route }) => {
       userICR = user?.userProfInfo?.userProfData.dnICR;
     }
     console.log("icc :", userICR);
+    console.log("user",user)
     let params = {
       userId: user?.user?.uid,
       mealItems: foodItems.foodItems,
@@ -59,7 +61,7 @@ const FoodCart = ({ navigation, route }) => {
     };
     console.log("params:", params);
     await axios
-      .post("https://diabeticapp-backend.onrender.com/api/submitData", params)
+      .post("https://diabeticapp-backend-dt6j.onrender.com/api/submitData", params)
       .then(() => {
         console.log("Data submitted successfully.");
         navigation.navigate("HomeScreen");

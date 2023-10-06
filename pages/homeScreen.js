@@ -37,8 +37,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     let count = 0;
-    count = count + getTotalCarbsNum("Breakfast");
-    getTotalCarbsNum("Lunch") + getTotalCarbsNum("Dinner");
+    count = count + getTotalCarbsNum("Breakfast") + getTotalCarbsNum("Lunch") + getTotalCarbsNum("Dinner");
     setCarbsConsumed(count);
   }, [totalCarbs]);
 
@@ -50,11 +49,11 @@ const HomeScreen = ({ navigation }) => {
 
   const getCarbsDetails = async (user) => {
     let params = {
-      userId: user ? user : "GNpgaWPeOGZBsSDxf23lrDnCGUt2", // static for now , fiberbase error
+      userId: user ? user : "cWEqwUcDg2XInprcd6UaLIQ62pm2", // static for now , fiberbase error
     };
     await axios
       .get(
-        `https://diabeticapp-backend.onrender.com/api/homeScreenCarbDetails?userId=${params.userId}`
+        `https://diabeticapp-backend-dt6j.onrender.com/api/homeScreenCarbDetails?userId=${params.userId}`
       )
       .then((res) => {
         console.log("Data:", res);

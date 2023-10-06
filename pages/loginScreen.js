@@ -39,14 +39,15 @@ export default function LoginScreen({ navigation }) {
 
                 // User is logging in for the first time, perform necessary actions
                 firebase
-                  .firestore()
-                  .collection("users")
-                  .doc(uid)
-                  .update({
-                    isFirstTimeLogin: false,
-                  })
-                  .then(() => {
-                    // Perform necessary actions for first-time login
+                .firestore()
+                .collection("users")
+                .doc(uid)
+                .update({
+                  isFirstTimeLogin: false,
+                })
+                .then(() => {
+                  // Perform necessary actions for first-time login
+                  console.log("Else Part")
                   })
                   .catch((error) => {
                     console.log(
@@ -57,6 +58,7 @@ export default function LoginScreen({ navigation }) {
               } else {
                 const fetchUserData = async () => {
                   const user = firebase.auth().currentUser;
+                  console.log("userData",user)
                   if (user) {
                     const userId = user.uid;
                     const userDocRef = firebase

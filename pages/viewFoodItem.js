@@ -28,7 +28,7 @@ const ViewFoodItem = ({ navigation, route }) => {
   const getUpdatedUserICR = async () => {
     console.log("HER: ", user?.user?.uid, tag);
     await axios
-      .get("https://diabeticapp-backend.onrender.com/api/updateUserICR", {
+      .get("https://diabeticapp-backend-dt6j.onrender.com/api/updateUserICR", {
         params: {
           userId: user?.user?.uid,
           mealType: tag,
@@ -51,7 +51,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     setLoading(true);
     await axios
       .get(
-        `https://diabeticapp-backend.onrender.com/api/getDataByMealType/Date?userId=${params.userId}&mealType=${params.mealType}`
+        `https://diabeticapp-backend-dt6j.onrender.com/api/getDataByMealType/Date?userId=${params.userId}&mealType=${params.mealType}`
       )
       .then((res) => {
         setLoading(false);
@@ -78,7 +78,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     setLoading(true);
     await axios
       .put(
-        `https://diabeticapp-backend.onrender.com/api/addBloodGlucose`,
+        `https://diabeticapp-backend-dt6j.onrender.com/api/addBloodGlucose`,
         params
       )
       .then((res) => {

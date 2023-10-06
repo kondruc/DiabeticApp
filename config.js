@@ -9,6 +9,7 @@ import "firebase/compat/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyAsdbsZbTxavZyymTaIAZ8juCV-GgJRxto",
   authDomain: "diabeticapp15.firebaseapp.com",
+  databaseURL: "https://diabeticapp15-default-rtdb.firebaseio.com",
   projectId: "diabeticapp15",
   storageBucket: "diabeticapp15.appspot.com",
   messagingSenderId: "1004027810243",
