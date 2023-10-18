@@ -76,6 +76,13 @@ const HistoryScreen = () => {
               <Text style={styles.selectedDayText}>
                 {data?.mealType} : {data?.totalCarbs}
               </Text>
+              <Text style={styles.selectedDayText}>
+                Insulin Dose Taken : {data?.insulinDose} 
+              </Text>
+              <Text>
+                
+              </Text>
+            
             </View>
           );
         })}

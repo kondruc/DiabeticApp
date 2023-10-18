@@ -14,7 +14,7 @@ import signupScreen from "../../pages/signupScreen";
 import { useSelector } from "react-redux";
 import UserOnboardingScreen from "../../pages/onBoarding/userInfo";
 import ProfileScreen from "../../pages/profileScreen";
-import HistoryScreen from "../../pages/historyScreen";
+import HistoryScreen from "../../pages/HistoryScreen";
 import HomeNavigation from "./homeNavigation";
 import GetUserDetails from "../../pages/onBoarding/getUserDetails";
 
