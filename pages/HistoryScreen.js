@@ -74,17 +74,21 @@ const HistoryScreen = () => {
           return (
             <View style={styles.chartContainer} key={data._id}>
               <Text style={styles.selectedDayText}>
-                {data?.mealType} : {data?.totalCarbs}
+                {data?.mealType} : {data?.totalCarbs} Carbs Taken
               </Text>
               <Text style={styles.selectedDayText}>
-                Insulin Dose Taken : {data?.insulinDose} 
+                Insulin Dose Taken : {data?.insulinDose} mmol
               </Text>
-              <Text>
-                
+              <Text style={styles.selectedDayText}>
+                Blood Glucose before {data?.mealType} : {data?.bloodGlucoseLevelBeforeMeal} 
               </Text>
+              <Text style={styles.selectedDayText}>
+                Blood Glucose After {data?.mealType} : {data?.bloodGlucoseLevel} 
+              </Text>
+              <View style={styles.divider} />
             
             </View>
-          );
+          );s
         })}
       <Button
         mode="contained"
@@ -120,6 +124,11 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     marginTop: 16,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC', // You can change the color to your preference
+    marginVertical: 4, // Adjust the margin as needed
   },
 });
 

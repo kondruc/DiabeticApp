@@ -10,6 +10,7 @@ import {
   Portal,
   Dialog,
   Snackbar,
+  TextInput,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { clearFoodItemResults } from "../redux/actions/actions";
@@ -58,14 +59,14 @@ const AddFood = ({ navigation, route }) => {
   // Function to handle incrementing the serving count
   const incrementServingCount = () => {
     setTotalCarbs((carbs * (servingCount + 1))?.toFixed(2));
-    setServingCount(servingCount + 1);
+    setServingCount(servingCount + 1.0);
   };
 
   // Function to handle decrementing the serving count
   const decrementServingCount = () => {
     if (servingCount > 1) {
       setTotalCarbs((carbs * (servingCount - 1))?.toFixed(2));
-      setServingCount(servingCount - 1);
+      setServingCount(servingCount - 1.0);
     }
   };
 
@@ -161,6 +162,9 @@ const AddFood = ({ navigation, route }) => {
     );
   };
 
+  const handleChange = (count) => {
+    setServingCount(count)
+  }
   return (
     <View style={styles.container}>
       {foodDetails?.fdcId ? (
@@ -184,7 +188,12 @@ const AddFood = ({ navigation, route }) => {
                 size={30}
                 onPress={decrementServingCount}
               />
-              <Text style={styles.servingText}>{servingCount}</Text>
+              <TextInput
+              style={styles.servingCount}
+              value={servingCount}
+              keyboardType="numeric"
+              onChangeText={handleChange}
+              />
               <IconButton
                 icon="plus-circle-outline"
                 size={30}
@@ -246,5 +255,5 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flexDirection: "row",
     alignItems: "center",
-  },
+  },
 });
