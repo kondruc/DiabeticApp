@@ -46,10 +46,11 @@ const HomeScreen = ({ navigation }) => {
       tag: tag,
     });
   };
+  // userId: user ? user : "cWEqwUcDg2XInprcd6UaLIQ62pm2", // static for now , fiberbase error
 
   const getCarbsDetails = async (user) => {
     let params = {
-      userId: user ? user : "cWEqwUcDg2XInprcd6UaLIQ62pm2", // static for now , fiberbase error
+      userId: user ? user : uid,
     };
     await axios
       .get(

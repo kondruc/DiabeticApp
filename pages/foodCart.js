@@ -20,15 +20,24 @@ const FoodCart = ({ navigation, route }) => {
   const { tag } = route?.params;
   const theme = useTheme();
   const dispatch = useDispatch();
+  
   const user = useSelector((state) => state.user);
   console.log(user)
   console.log("User her:", user?.userProfInfo?.userProfData);
   const foodData = useSelector((state) => state.api);
   const foodItems = useSelector((state) => state.addFood);
+  let icr;
   const totalCarbs =
     foodItems?.foodItems?.length > 0 ? calculateCarbs(foodItems?.foodItems) : 0;
-  const insulinDose = getInsultinDose(totalCarbs, 10);
-
+    if(tag == "Breakfast") {
+      icr = user?.userProfInfo?.userProfData.bfICR;
+    } else if(tag == "Lunch") {
+      icr = user?.userProfInfo?.userProfData.lhICR;
+    } else {
+      icr = user?.userProfInfo?.userProfData.dnICR;
+    }
+  const insulinDose = getInsultinDose(totalCarbs, icr);
+    
   useEffect(() => {
     if (foodData?.foodItem?.fdcId && foodData.success) {
       navigation.navigate("AddFood", {
@@ -132,7 +141,7 @@ const FoodCart = ({ navigation, route }) => {
                 style={{ flex: 1 }}
                 key={index}
                 title={item.description}
-                description={`Carbs: ${getCarbs(item)}`}
+                description={`Carbs : ${getCarbs(item)}`}
                 right={() => <RightListView item={item} />}
               />
               <Tooltip title="Edit" leaveTouchDelay={1000}>
@@ -211,6 +220,6 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 15,
-    marginHorizontal: 16,
-  },
+    marginHorizontal: 16,
+  },
 });

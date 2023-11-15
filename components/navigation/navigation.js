@@ -17,6 +17,7 @@ import ProfileScreen from "../../pages/profileScreen";
 import HistoryScreen from "../../pages/HistoryScreen";
 import HomeNavigation from "./homeNavigation";
 import GetUserDetails from "../../pages/onBoarding/getUserDetails";
+import Trends from "../../pages/trends";
 
 const Drawer = createDrawerNavigator();
 
@@ -82,6 +83,7 @@ export default function NavigationStack() {
                 />
                 <Drawer.Screen name="History" component={HistoryScreen} />
                 <Drawer.Screen name="Profile" component={ProfileScreen} />
+                <Drawer.Screen name="Trends" component={Trends} />
               </Drawer.Navigator>
             )}
           </>
