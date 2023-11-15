@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ActivityIndicator,
   Button,
@@ -12,8 +12,12 @@ import {
 } from "react-native-paper";
 import AddCarbsModal from "../ui/addCarbsModel";
 import { firebase } from "../config";
+import { useIsFocused } from '@react-navigation/native';
+
 
 const ViewFoodItem = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const user = useSelector((state) => state.user);
   const { tag } = route?.params;
   const [objectId, setObjectId] = useState(null);
@@ -26,6 +30,77 @@ const ViewFoodItem = ({ navigation, route }) => {
   const [modalVisibleBeforeMeal, setModalVisibleBeforeMeal] = useState(false);
   const [modalVisibleAfterMeal, setModalVisibleAfterMeal] = useState(false);
   const [userICR, setUserICR] = useState("");
+
+  const [userStateData, setUserStateData] = useState({});
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [age, setAge] = useState("");
+  const [breakfastStartHour, setBreakfastStartHour] = useState({});
+  const [breakfastEndHour, setBreakfastEndHour] = useState({});
+  const [lunchStartHour, setLunchStartHour] = useState({});
+  const [lunchEndHour, setLunchEndHour] = useState({});
+  const [dinnerStartHour, setDinnerStartHour] = useState({});
+  const [dinnerEndHour, setDinnerEndHour] = useState({});
+  const [bfICR, setBfICR] = useState("");
+  const [lhICR, setLhICR] = useState("");
+  const [dnICR, setDnICR] = useState("");
+  const [crr, setCRR] = useState("");
+
+  useEffect(() => {
+    if (isFocused) {
+      const fetchUserData = async () => {
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+          const userId = user.uid;
+          const userDocRef = firebase
+            .firestore()
+            .collection("users")
+            .doc(userId);
+          const userProfRef = firebase
+            .firestore()
+            .collection("userProfile")
+            .doc(userId);
+
+          const userDoc = await userDocRef.get();
+          const userProf = await userProfRef.get();
+
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            setUserStateData(userData);
+            dispatch({
+              type: "userData",
+              payload: { userData },
+            });
+          } else {
+            console.log("User data not found.");
+          }
+
+          if (userProf.exists) {
+            const userProfData = userProf.data();
+            setWeight(userProfData.weight);
+            setHeight(userProfData.height);
+            setAge(userProfData.age);
+            setBreakfastStartHour(userProfData.breakfastStartHour);
+            setBreakfastEndHour(userProfData.breakfastEndHour);
+            setLunchStartHour(userProfData.lunchStartHour);
+            setLunchEndHour(userProfData.lunchEndHour);
+            setDinnerStartHour(userProfData.dinnerStartHour);
+            setDinnerEndHour(userProfData.dinnerEndHour);
+            setBfICR(userProfData.bfICR);
+            setLhICR(userProfData.lhICR);
+            setDnICR(userProfData.dnICR);
+            setCRR(userProfData.crr);
+          } else {
+            console.log("User profile data not found.");
+          }
+        } else {
+          console.log("No user is currently logged in.");
+        }
+      };
+      fetchUserData();
+    }
+  }, [isFocused]);
 
   const getUpdatedUserICR = async () => {
     console.log("HER: ", user?.user?.uid, tag);
@@ -215,32 +290,6 @@ const ViewFoodItem = ({ navigation, route }) => {
             <ActivityIndicator size="large" style={styles.activityIndicator} />
           ) : (
             <>
-            
-              {/* {bloodGlucoseBeforeMeal == 0 && foodItems?.length > 0 ? (
-                <View style={styles.addGlucose}>
-                  <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Text style={{ fontSize: 20, color: "#1356ba" }}>
-                      Add Blood Glucose Reading Before Meal
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              ) : null}
-              <AddCarbsModal
-              visible={modalVisible}
-              placeholder={"Enter Blood-glusoce reading Before Meal"}
-              onDismiss={() => setModalVisible(false)}
-              onSave={handleSaveBloodGlucoseBeforeMeal}
-              /> */}
-              
-              
-              
-        
-              {/* <Text variant="titleMedium">
-                Total Blood Glucose Level Before Meal - {bloodGlucoseBeforeMeal} g
-              </Text> */}
-          
-        
-              
               <Text style={styles.message}>You have no Food Items!!</Text>
               <Button
                 mode="contained"
@@ -265,6 +314,12 @@ const ViewFoodItem = ({ navigation, route }) => {
       {foodItems?.length > 0 ? (
         <View style={styles.view}>
           <Text variant="titleMedium">
+            Your ICR as per the records - 
+            {bfICR ? ` Breakfast ICR - ${bfICR}` : ''}
+            {lhICR ? `, Lunch ICR - ${lhICR}` : ''}
+            {dnICR ? `, Dinner ICR - ${dnICR}` : ''}
+          </Text>
+          <Text variant="titleMedium">
             Total Carbs Consumed - {totalCarbs} g
           </Text>
           {insulinDose > 0 ? (
@@ -283,12 +338,10 @@ const ViewFoodItem = ({ navigation, route }) => {
               Total Blood Glucose Level After Meal - {bloodGlucoseLevel} g
             </Text>
           ) : null}
-          
-        
-          
+
         </View>
       ) : null}
-      {bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
+      {/* {bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
         <View style={styles.addGlucose}>
           <TouchableOpacity onPress={() => setModalVisibleBeforeMeal(true)}>
             <Text style={{ fontSize: 20, color: "#1356ba" }}>
@@ -302,7 +355,7 @@ const ViewFoodItem = ({ navigation, route }) => {
         placeholder={"Enter Blood-glusoce reading Before Meal"}
         onDismiss={() => setModalVisible(false)}
         onSave={handleSaveBloodGlucoseBeforeMeal}
-      />
+      /> */}
       
       {bloodGlucoseLevel == 0 && foodItems?.length > 0 ? (
         <View style={styles.addGlucose}>
