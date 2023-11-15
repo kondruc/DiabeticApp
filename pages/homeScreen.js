@@ -134,6 +134,9 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.carbsText}>
             Carbs Consumed - {getTotalCarbsNum(mealType)}g
           </Text>
+          <Text style={styles.correctionText}>
+            correction factor - {getCorrectionFactorValue(mealType)}
+          </Text>
         </View>
       </Button>
     );
@@ -254,6 +257,10 @@ const styles = StyleSheet.create({
   carbsText: {
     fontSize: 14,
     color: "white",
+  },
+  correctionText: {
+    fontSize: 14,
+    color: "#454241"
   },
   buttoncontainer: {
     flex: 1,

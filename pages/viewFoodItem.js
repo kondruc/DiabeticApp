@@ -20,12 +20,40 @@ const ViewFoodItem = ({ navigation, route }) => {
   const [foodItems, setFoodItems] = useState([]);
   const [totalCarbs, setTotalCarbs] = useState("");
   const [insulinDose, setInsulinDose] = useState(0);
+  const [userCRR, setUserCRR] = useState(0);
   const [bloodGlucoseLevel, setBloodGlucoseLevel] = useState(0);
   const [bloodGlucoseLevelBeforeMeal, setBloodGlucoseLevelBeforeMeal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [modalVisibleBeforeMeal, setModalVisibleBeforeMeal] = useState(false);
   const [modalVisibleAfterMeal, setModalVisibleAfterMeal] = useState(false);
   const [userICR, setUserICR] = useState("");
+  const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+          const userId = user.uid;
+          const userProfRef = firebase
+            .firestore()
+            .collection("userProfile")
+            .doc(userId);
+
+          const userProf = await userProfRef.get();
+
+          if (userProf.exists) {
+            const userProfData = userProf.data();
+            setBloodGlucoseRange(userProfData.bloodGlucoseRange);
+          } else {
+            console.log("User profile data not found.");
+          }
+        } else {
+          console.log("No user is currently logged in.");
+        }
+      };
+      fetchUserData();
+    });
 
   const getUpdatedUserICR = async () => {
     console.log("HER: ", user?.user?.uid, tag);
@@ -67,6 +95,8 @@ const ViewFoodItem = ({ navigation, route }) => {
         setBloodGlucoseLevelBeforeMeal(
           res?.data?.bloodGlucoseLevelBeforeMeal ? res?.data?.bloodGlucoseLevelBeforeMeal : 0
         );
+        setUserCRR(res?.data?.userCRR);
+        console.log(res?.data?.userCRR);
         console.log("Data:", res, res?.data ? res?.data?.mealItems : []);
       })
       .catch((e) => {
@@ -120,6 +150,7 @@ const ViewFoodItem = ({ navigation, route }) => {
   useEffect(() => {
     getUpdatedUserICR();
     getFoodItems();
+    
   }, []);
 
   const handleSaveBloodGlucose = (data) => {
@@ -189,6 +220,25 @@ const ViewFoodItem = ({ navigation, route }) => {
       </View>
     );
   };
+
+  const getCorrectionFactor = () => {
+    try {
+      console.log(bloodGlucoseLevel > bloodGlucoseRange.split("-")[1])
+        if ( bloodGlucoseLevel > bloodGlucoseRange.split("-")[1]) {
+         const x = parseFloat(userCRR) + (((bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR));
+         console.log(userCRR + (bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR);
+         return x;
+        }
+        else {
+          console.log(userCRR);
+          return userCRR;
+        }
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -283,7 +333,12 @@ const ViewFoodItem = ({ navigation, route }) => {
               Total Blood Glucose Level After Meal - {bloodGlucoseLevel} g
             </Text>
           ) : null}
-          
+
+          {userCRR > 0 ? (
+            <Text variant="titleMedium">
+              Your correction factor  - {getCorrectionFactor()} 
+            </Text>
+          ) : null}
         
           
         </View>
