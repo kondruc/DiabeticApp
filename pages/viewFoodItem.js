@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ActivityIndicator,
   Button,
@@ -12,8 +12,12 @@ import {
 } from "react-native-paper";
 import AddCarbsModal from "../ui/addCarbsModel";
 import { firebase } from "../config";
+import { useIsFocused } from '@react-navigation/native';
+
 
 const ViewFoodItem = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const user = useSelector((state) => state.user);
   const { tag } = route?.params;
   const [objectId, setObjectId] = useState(null);
@@ -54,6 +58,77 @@ const ViewFoodItem = ({ navigation, route }) => {
       };
       fetchUserData();
     });
+
+  const [userStateData, setUserStateData] = useState({});
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [age, setAge] = useState("");
+  const [breakfastStartHour, setBreakfastStartHour] = useState({});
+  const [breakfastEndHour, setBreakfastEndHour] = useState({});
+  const [lunchStartHour, setLunchStartHour] = useState({});
+  const [lunchEndHour, setLunchEndHour] = useState({});
+  const [dinnerStartHour, setDinnerStartHour] = useState({});
+  const [dinnerEndHour, setDinnerEndHour] = useState({});
+  const [bfICR, setBfICR] = useState("");
+  const [lhICR, setLhICR] = useState("");
+  const [dnICR, setDnICR] = useState("");
+  const [crr, setCRR] = useState("");
+
+  useEffect(() => {
+    if (isFocused) {
+      const fetchUserData = async () => {
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+          const userId = user.uid;
+          const userDocRef = firebase
+            .firestore()
+            .collection("users")
+            .doc(userId);
+          const userProfRef = firebase
+            .firestore()
+            .collection("userProfile")
+            .doc(userId);
+
+          const userDoc = await userDocRef.get();
+          const userProf = await userProfRef.get();
+
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            setUserStateData(userData);
+            dispatch({
+              type: "userData",
+              payload: { userData },
+            });
+          } else {
+            console.log("User data not found.");
+          }
+
+          if (userProf.exists) {
+            const userProfData = userProf.data();
+            setWeight(userProfData.weight);
+            setHeight(userProfData.height);
+            setAge(userProfData.age);
+            setBreakfastStartHour(userProfData.breakfastStartHour);
+            setBreakfastEndHour(userProfData.breakfastEndHour);
+            setLunchStartHour(userProfData.lunchStartHour);
+            setLunchEndHour(userProfData.lunchEndHour);
+            setDinnerStartHour(userProfData.dinnerStartHour);
+            setDinnerEndHour(userProfData.dinnerEndHour);
+            setBfICR(userProfData.bfICR);
+            setLhICR(userProfData.lhICR);
+            setDnICR(userProfData.dnICR);
+            setCRR(userProfData.crr);
+          } else {
+            console.log("User profile data not found.");
+          }
+        } else {
+          console.log("No user is currently logged in.");
+        }
+      };
+      fetchUserData();
+    }
+  }, [isFocused]);
 
   const getUpdatedUserICR = async () => {
     console.log("HER: ", user?.user?.uid, tag);
@@ -96,6 +171,7 @@ const ViewFoodItem = ({ navigation, route }) => {
           res?.data?.bloodGlucoseLevelBeforeMeal ? res?.data?.bloodGlucoseLevelBeforeMeal : 0
         );
         setUserCRR(res?.data?.userCRR);
+        console.log("This is crr")
         console.log(res?.data?.userCRR);
         console.log("Data:", res, res?.data ? res?.data?.mealItems : []);
       })
@@ -225,7 +301,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     try {
       console.log(bloodGlucoseLevel > bloodGlucoseRange.split("-")[1])
         if ( bloodGlucoseLevel > bloodGlucoseRange.split("-")[1]) {
-         const x = parseFloat(userCRR) + (((bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR));
+         const x = (((bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR));
          console.log(userCRR + (bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR);
          return x;
         }
@@ -265,32 +341,6 @@ const ViewFoodItem = ({ navigation, route }) => {
             <ActivityIndicator size="large" style={styles.activityIndicator} />
           ) : (
             <>
-            
-              {/* {bloodGlucoseBeforeMeal == 0 && foodItems?.length > 0 ? (
-                <View style={styles.addGlucose}>
-                  <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Text style={{ fontSize: 20, color: "#1356ba" }}>
-                      Add Blood Glucose Reading Before Meal
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              ) : null}
-              <AddCarbsModal
-              visible={modalVisible}
-              placeholder={"Enter Blood-glusoce reading Before Meal"}
-              onDismiss={() => setModalVisible(false)}
-              onSave={handleSaveBloodGlucoseBeforeMeal}
-              /> */}
-              
-              
-              
-        
-              {/* <Text variant="titleMedium">
-                Total Blood Glucose Level Before Meal - {bloodGlucoseBeforeMeal} g
-              </Text> */}
-          
-        
-              
               <Text style={styles.message}>You have no Food Items!!</Text>
               <Button
                 mode="contained"
@@ -299,7 +349,7 @@ const ViewFoodItem = ({ navigation, route }) => {
               >
                 Add Food Here
               </Button>
-              {/* <Text style={styles.messageICR}>Update Your ICR !!</Text>
+              {/* <Text style={styles.messageICR}>After food intake please press for your dose !!</Text>
               <Button
                 mode="contained"
                 onPress={updateUserICR}
@@ -314,6 +364,12 @@ const ViewFoodItem = ({ navigation, route }) => {
       <Divider />
       {foodItems?.length > 0 ? (
         <View style={styles.view}>
+          <Text variant="titleMedium">
+            Your ICR as per the records - 
+            {bfICR ? ` Breakfast ICR - ${bfICR}` : ''}
+            {lhICR ? `, Lunch ICR - ${lhICR}` : ''}
+            {dnICR ? `, Dinner ICR - ${dnICR}` : ''}
+          </Text>
           <Text variant="titleMedium">
             Total Carbs Consumed - {totalCarbs} g
           </Text>
@@ -334,16 +390,16 @@ const ViewFoodItem = ({ navigation, route }) => {
             </Text>
           ) : null}
 
+
           {userCRR > 0 ? (
             <Text variant="titleMedium">
-              Your correction factor  - {getCorrectionFactor()} 
+              Your correction dose  - {getCorrectionFactor()} 
             </Text>
           ) : null}
-        
-          
+
         </View>
       ) : null}
-      {bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
+      { bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
         <View style={styles.addGlucose}>
           <TouchableOpacity onPress={() => setModalVisibleBeforeMeal(true)}>
             <Text style={{ fontSize: 20, color: "#1356ba" }}>
@@ -357,7 +413,7 @@ const ViewFoodItem = ({ navigation, route }) => {
         placeholder={"Enter Blood-glusoce reading Before Meal"}
         onDismiss={() => setModalVisible(false)}
         onSave={handleSaveBloodGlucoseBeforeMeal}
-      />
+      /> 
       
       {bloodGlucoseLevel == 0 && foodItems?.length > 0 ? (
         <View style={styles.addGlucose}>

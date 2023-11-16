@@ -134,9 +134,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.carbsText}>
             Carbs Consumed - {getTotalCarbsNum(mealType)}g
           </Text>
-          <Text style={styles.correctionText}>
-            correction factor - {getCorrectionFactorValue(mealType)}
-          </Text>
+         
         </View>
       </Button>
     );
