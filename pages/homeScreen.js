@@ -130,7 +130,7 @@ const HomeScreen = ({ navigation }) => {
         contentStyle={styles.buttonContent}
       >
         <View>
-          <Text style={styles.mealTypeText}>Add {mealType}</Text>
+          <Text style={styles.mealTypeText}>{mealType}</Text>
           <Text style={styles.carbsText}>
             Carbs Consumed - {getTotalCarbsNum(mealType)}g
           </Text>

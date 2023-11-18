@@ -73,6 +73,8 @@ const ViewFoodItem = ({ navigation, route }) => {
   const [lhICR, setLhICR] = useState("");
   const [dnICR, setDnICR] = useState("");
   const [crr, setCRR] = useState("");
+  const [showSummary, setShowSummary] = useState(false);
+
 
   useEffect(() => {
     if (isFocused) {
@@ -318,7 +320,7 @@ const ViewFoodItem = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {foodItems?.length > 0 ? (
+      {showSummary ? (
         <List.Section style={styles.listSection}>
           <List.Subheader>
             {" "}
@@ -341,13 +343,46 @@ const ViewFoodItem = ({ navigation, route }) => {
             <ActivityIndicator size="large" style={styles.activityIndicator} />
           ) : (
             <>
-              <Text style={styles.message}>You have no Food Items!!</Text>
+
+              {bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length <= 0 && (
+                      <View style={styles.addGlucose}>
+                        <TouchableOpacity onPress={() => setModalVisibleBeforeMeal(true)}>
+                          <Text style={{ fontSize: 20, color: "#1356ba" }}>
+                            Add Blood Glucose Reading Before Meal
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                    <AddCarbsModal
+                      visible={modalVisibleBeforeMeal}
+                      placeholder={"Enter Blood-glusoce reading Before Meal"}
+                      onDismiss={() => setModalVisible(false)}
+                      onSave={handleSaveBloodGlucoseBeforeMeal}
+                    />
+                    {foodItems.length > 0 &&(
+                      <>
+                        <Text style={styles.message}>Food is already added. Check summary for more details.</Text>
+                      </>
+                    )}
+              {foodItems.length <= 0 &&(
+                <>
+                  <Text style={styles.message}>You have no Food Items!!</Text>
+                  <Button
+                    mode="contained"
+                    onPress={onAddFood}
+                    style={styles.button}
+                  >
+                    Add Food Here
+                  </Button>
+                </>
+              )}
+              
               <Button
                 mode="contained"
-                onPress={onAddFood}
+                onPress={() => setShowSummary(!showSummary)}
                 style={styles.button}
               >
-                Add Food Here
+                Summary For Meal
               </Button>
               {/* <Text style={styles.messageICR}>After food intake please press for your dose !!</Text>
               <Button
@@ -362,7 +397,7 @@ const ViewFoodItem = ({ navigation, route }) => {
         </View>
       )}
       <Divider />
-      {foodItems?.length > 0 ? (
+      {showSummary  ? (
         <View style={styles.view}>
           <Text variant="titleMedium">
             Your ICR as per the records - 
