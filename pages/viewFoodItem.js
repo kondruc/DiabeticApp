@@ -26,13 +26,13 @@ const ViewFoodItem = ({ navigation, route }) => {
   const [insulinDose, setInsulinDose] = useState(0);
   const [userCRR, setUserCRR] = useState(0);
   const [bloodGlucoseLevel, setBloodGlucoseLevel] = useState(0);
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState(0);
   const [bloodGlucoseLevelBeforeMeal, setBloodGlucoseLevelBeforeMeal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [modalVisibleBeforeMeal, setModalVisibleBeforeMeal] = useState(false);
   const [modalVisibleAfterMeal, setModalVisibleAfterMeal] = useState(false);
   const [userICR, setUserICR] = useState("");
-  const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
-
+  
   useEffect(() => {
       const fetchUserData = async () => {
         const user = firebase.auth().currentUser;
@@ -48,7 +48,7 @@ const ViewFoodItem = ({ navigation, route }) => {
 
           if (userProf.exists) {
             const userProfData = userProf.data();
-            setBloodGlucoseRange(userProfData.bloodGlucoseRange);
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
           } else {
             console.log("User profile data not found.");
           }
@@ -121,6 +121,7 @@ const ViewFoodItem = ({ navigation, route }) => {
             setLhICR(userProfData.lhICR);
             setDnICR(userProfData.dnICR);
             setCRR(userProfData.crr);
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
           } else {
             console.log("User profile data not found.");
           }
@@ -169,6 +170,9 @@ const ViewFoodItem = ({ navigation, route }) => {
         setBloodGlucoseLevel(
           res?.data?.bloodGlucoseLevel ? res?.data?.bloodGlucoseLevel : 0
         );
+        setTargetBloodGlucose(
+          res?.data?.targetBloodGlucose ? res?.data?.targetBloodGlucose : 0
+        )
         setBloodGlucoseLevelBeforeMeal(
           res?.data?.bloodGlucoseLevelBeforeMeal ? res?.data?.bloodGlucoseLevelBeforeMeal : 0
         );
@@ -235,6 +239,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     addBloodGlucose(data);
     setModalVisibleAfterMeal(false);
     setBloodGlucoseLevel(data); 
+    console.log("target"+targetBloodGlucose+"blood glucose"+bloodGlucoseLevel);
   };
 
   const handleSaveBloodGlucoseBeforeMeal = (data) => {
@@ -301,16 +306,10 @@ const ViewFoodItem = ({ navigation, route }) => {
 
   const getCorrectionFactor = () => {
     try {
-      console.log(bloodGlucoseLevel > bloodGlucoseRange.split("-")[1])
-        if ( bloodGlucoseLevel > bloodGlucoseRange.split("-")[1]) {
-         const x = (((bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR));
-         console.log(userCRR + (bloodGlucoseLevel - (bloodGlucoseRange.split("-")[1]))/userCRR);
+        console.log("blood glucose level"+bloodGlucoseLevel+"target bg"+targetBloodGlucose+"userCRR"+userCRR);
+         const x = ((bloodGlucoseLevel - targetBloodGlucose)/userCRR);
          return x;
-        }
-        else {
-          console.log(userCRR);
-          return userCRR;
-        }
+        
       } catch (error) {
         console.log(error);
         throw error;
@@ -425,8 +424,8 @@ const ViewFoodItem = ({ navigation, route }) => {
             </Text>
           ) : null}
 
-
-          {userCRR > 0 ? (
+            
+          {bloodGlucoseLevel > targetBloodGlucose ? (
             <Text variant="titleMedium">
               Your correction dose  - {getCorrectionFactor()} 
             </Text>

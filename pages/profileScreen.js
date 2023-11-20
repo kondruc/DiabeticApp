@@ -21,6 +21,7 @@ const ProfileScreen = ({ navigation }) => {
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
   const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState("");
   const [breakfastStartHour, setBreakfastStartHour] = useState({});
   const [breakfastEndHour, setBreakfastEndHour] = useState({});
   const [lunchStartHour, setLunchStartHour] = useState({});
@@ -159,6 +160,7 @@ const ProfileScreen = ({ navigation }) => {
             setHeight(userProfData.height);
             setAge(userProfData.age);
             setBloodGlucoseRange(userProfData.bloodGlucoseRange);
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
             setBreakfastStartHour(userProfData.breakfastStartHour);
             setBreakfastEndHour(userProfData.breakfastEndHour);
             setLunchStartHour(userProfData.lunchStartHour);
@@ -202,6 +204,7 @@ const ProfileScreen = ({ navigation }) => {
           height,
           age,
           bloodGlucoseRange,
+          targetBloodGlucose,
           breakfastStartHour,
           breakfastEndHour,
           lunchStartHour,
@@ -314,6 +317,13 @@ const ProfileScreen = ({ navigation }) => {
               value={bloodGlucoseRange}
               onChangeText={setBloodGlucoseRange}
               keyboardType="text"
+            />
+            <TextInput
+              label="Enter your target blood glucose"
+              value={targetBloodGlucose}
+              style={styles.input}
+              onChangeText={(e) => setTargetBloodGlucose(e)}
+              keyboardType="numeric"
             />
             <View style={styles.hoursContainer}>
               <View style={styles.hoursRow}>
@@ -436,6 +446,7 @@ const ProfileScreen = ({ navigation }) => {
                 !height ||
                 !age ||
                 !bloodGlucoseRange ||
+                !targetBloodGlucose ||
                 !breakfastStartHour ||
                 !breakfastEndHour ||
                 !lunchStartHour ||
