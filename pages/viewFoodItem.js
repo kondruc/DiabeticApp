@@ -24,12 +24,40 @@ const ViewFoodItem = ({ navigation, route }) => {
   const [foodItems, setFoodItems] = useState([]);
   const [totalCarbs, setTotalCarbs] = useState("");
   const [insulinDose, setInsulinDose] = useState(0);
+  const [userCRR, setUserCRR] = useState(0);
   const [bloodGlucoseLevel, setBloodGlucoseLevel] = useState(0);
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState(0);
   const [bloodGlucoseLevelBeforeMeal, setBloodGlucoseLevelBeforeMeal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [modalVisibleBeforeMeal, setModalVisibleBeforeMeal] = useState(false);
   const [modalVisibleAfterMeal, setModalVisibleAfterMeal] = useState(false);
   const [userICR, setUserICR] = useState("");
+  
+  useEffect(() => {
+      const fetchUserData = async () => {
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+          const userId = user.uid;
+          const userProfRef = firebase
+            .firestore()
+            .collection("userProfile")
+            .doc(userId);
+
+          const userProf = await userProfRef.get();
+
+          if (userProf.exists) {
+            const userProfData = userProf.data();
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
+          } else {
+            console.log("User profile data not found.");
+          }
+        } else {
+          console.log("No user is currently logged in.");
+        }
+      };
+      fetchUserData();
+    });
 
   const [userStateData, setUserStateData] = useState({});
   const [weight, setWeight] = useState("");
@@ -93,6 +121,7 @@ const ViewFoodItem = ({ navigation, route }) => {
             setLhICR(userProfData.lhICR);
             setDnICR(userProfData.dnICR);
             setCRR(userProfData.crr);
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
           } else {
             console.log("User profile data not found.");
           }
@@ -141,9 +170,15 @@ const ViewFoodItem = ({ navigation, route }) => {
         setBloodGlucoseLevel(
           res?.data?.bloodGlucoseLevel ? res?.data?.bloodGlucoseLevel : 0
         );
+        setTargetBloodGlucose(
+          res?.data?.targetBloodGlucose ? res?.data?.targetBloodGlucose : 0
+        )
         setBloodGlucoseLevelBeforeMeal(
           res?.data?.bloodGlucoseLevelBeforeMeal ? res?.data?.bloodGlucoseLevelBeforeMeal : 0
         );
+        setUserCRR(res?.data?.userCRR);
+        console.log("This is crr")
+        console.log(res?.data?.userCRR);
         console.log("Data:", res, res?.data ? res?.data?.mealItems : []);
       })
       .catch((e) => {
@@ -197,12 +232,14 @@ const ViewFoodItem = ({ navigation, route }) => {
   useEffect(() => {
     getUpdatedUserICR();
     getFoodItems();
+    
   }, []);
 
   const handleSaveBloodGlucose = (data) => {
     addBloodGlucose(data);
     setModalVisibleAfterMeal(false);
     setBloodGlucoseLevel(data); 
+    console.log("target"+targetBloodGlucose+"blood glucose"+bloodGlucoseLevel);
   };
 
   const handleSaveBloodGlucoseBeforeMeal = (data) => {
@@ -266,6 +303,19 @@ const ViewFoodItem = ({ navigation, route }) => {
       </View>
     );
   };
+
+  const getCorrectionFactor = () => {
+    try {
+        console.log("blood glucose level"+bloodGlucoseLevel+"target bg"+targetBloodGlucose+"userCRR"+userCRR);
+         const x = ((bloodGlucoseLevel - targetBloodGlucose)/userCRR);
+         return x;
+        
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -333,7 +383,7 @@ const ViewFoodItem = ({ navigation, route }) => {
               >
                 Summary For Meal
               </Button>
-              {/* <Text style={styles.messageICR}>Update Your ICR !!</Text>
+              {/* <Text style={styles.messageICR}>After food intake please press for your dose !!</Text>
               <Button
                 mode="contained"
                 onPress={updateUserICR}
@@ -374,9 +424,16 @@ const ViewFoodItem = ({ navigation, route }) => {
             </Text>
           ) : null}
 
+            
+          {bloodGlucoseLevel > targetBloodGlucose ? (
+            <Text variant="titleMedium">
+              Your correction dose  - {getCorrectionFactor()} 
+            </Text>
+          ) : null}
+
         </View>
       ) : null}
-      {/* {bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
+      { bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
         <View style={styles.addGlucose}>
           <TouchableOpacity onPress={() => setModalVisibleBeforeMeal(true)}>
             <Text style={{ fontSize: 20, color: "#1356ba" }}>
@@ -390,7 +447,7 @@ const ViewFoodItem = ({ navigation, route }) => {
         placeholder={"Enter Blood-glusoce reading Before Meal"}
         onDismiss={() => setModalVisible(false)}
         onSave={handleSaveBloodGlucoseBeforeMeal}
-      /> */}
+      /> 
       
       {bloodGlucoseLevel == 0 && foodItems?.length > 0 ? (
         <View style={styles.addGlucose}>

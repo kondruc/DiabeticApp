@@ -8,6 +8,8 @@ const UserOnboardingScreen = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [height, setHeight] = useState("");
+  const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState("");
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
 
@@ -37,6 +39,19 @@ const UserOnboardingScreen = ({ navigation }) => {
         value={height}
         onChangeText={setHeight}
         style={styles.input}
+      />
+     <TextInput
+       label="Enter your blood glucose range(a-b)"
+       style={styles.input}
+       value={bloodGlucoseRange}
+       onChangeText={setBloodGlucoseRange}    
+      />
+      <TextInput
+        label="Enter your target blood glucose"
+        value={targetBloodGlucose}
+        style={styles.input}
+        onChangeText={setTargetBloodGlucose}
+        keyboardType="numeric"
       />
     </View>
   );

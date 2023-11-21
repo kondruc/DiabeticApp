@@ -18,6 +18,8 @@ const GetUserDetails = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
+  const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState("");
   const [breakfastStartHour, setBreakfastStartHour] = useState({});
   const [breakfastEndHour, setBreakfastEndHour] = useState({});
   const [lunchStartHour, setLunchStartHour] = useState({});
@@ -143,6 +145,8 @@ const GetUserDetails = ({ navigation }) => {
           weight,
           height,
           age,
+          bloodGlucoseRange,
+          targetBloodGlucose,
           breakfastStartHour,
           breakfastEndHour,
           lunchStartHour,
@@ -239,6 +243,20 @@ const GetUserDetails = ({ navigation }) => {
               value={age}
               style={styles.input}
               onChangeText={(e) => setAge(e)}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Enter your blood glucose range(a-b)"
+              value={bloodGlucoseRange}
+              style={styles.input}
+              onChangeText={(e) => setBloodGlucoseRange(e)}
+              keyboardType="text"
+            />
+            <TextInput
+              placeholder="Enter your target blood glucose"
+              value={targetBloodGlucose}
+              style={styles.input}
+              onChangeText={(e) => setTargetBloodGlucose(e)}
               keyboardType="numeric"
             />
             <View style={styles.hoursContainer}>
@@ -361,6 +379,8 @@ const GetUserDetails = ({ navigation }) => {
                 !weight ||
                 !height ||
                 !age ||
+                !bloodGlucoseRange ||
+                !targetBloodGlucose ||
                 !breakfastStartHour ||
                 !breakfastEndHour ||
                 !lunchStartHour ||

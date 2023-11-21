@@ -20,6 +20,8 @@ const ProfileScreen = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
+  const [bloodGlucoseRange, setBloodGlucoseRange] = useState("");
+  const [targetBloodGlucose, setTargetBloodGlucose] = useState("");
   const [breakfastStartHour, setBreakfastStartHour] = useState({});
   const [breakfastEndHour, setBreakfastEndHour] = useState({});
   const [lunchStartHour, setLunchStartHour] = useState({});
@@ -157,6 +159,8 @@ const ProfileScreen = ({ navigation }) => {
             setWeight(userProfData.weight);
             setHeight(userProfData.height);
             setAge(userProfData.age);
+            setBloodGlucoseRange(userProfData.bloodGlucoseRange);
+            setTargetBloodGlucose(userProfData.targetBloodGlucose);
             setBreakfastStartHour(userProfData.breakfastStartHour);
             setBreakfastEndHour(userProfData.breakfastEndHour);
             setLunchStartHour(userProfData.lunchStartHour);
@@ -199,6 +203,8 @@ const ProfileScreen = ({ navigation }) => {
           weight,
           height,
           age,
+          bloodGlucoseRange,
+          targetBloodGlucose,
           breakfastStartHour,
           breakfastEndHour,
           lunchStartHour,
@@ -305,7 +311,20 @@ const ProfileScreen = ({ navigation }) => {
               onChangeText={setAge}
               keyboardType="numeric"
             />
-
+            <TextInput
+              label="Enter your blood glucose range(a-b)"
+              style={styles.input}
+              value={bloodGlucoseRange}
+              onChangeText={setBloodGlucoseRange}
+              keyboardType="text"
+            />
+            <TextInput
+              label="Enter your target blood glucose"
+              value={targetBloodGlucose}
+              style={styles.input}
+              onChangeText={(e) => setTargetBloodGlucose(e)}
+              keyboardType="numeric"
+            />
             <View style={styles.hoursContainer}>
               <View style={styles.hoursRow}>
                 <View
@@ -426,6 +445,8 @@ const ProfileScreen = ({ navigation }) => {
                 !weight ||
                 !height ||
                 !age ||
+                !bloodGlucoseRange ||
+                !targetBloodGlucose ||
                 !breakfastStartHour ||
                 !breakfastEndHour ||
                 !lunchStartHour ||
