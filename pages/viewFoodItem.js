@@ -136,7 +136,7 @@ const ViewFoodItem = ({ navigation, route }) => {
   const getUpdatedUserICR = async () => {
     console.log("HER: ", user?.user?.uid, tag);
     await axios
-      .get("https://diabeticapp-backend-dt6j.onrender.com/api/updateUserICR", {
+      .get("https://diabetesapp-backend.onrender.com/api/updateUserICR", {
         params: {
           userId: user?.user?.uid,
           mealType: tag,
@@ -159,7 +159,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     setLoading(true);
     await axios
       .get(
-        `https://diabeticapp-backend-dt6j.onrender.com/api/getDataByMealType/Date?userId=${params.userId}&mealType=${params.mealType}`
+        `https://diabetesapp-backend.onrender.com/api/getDataByMealType/Date?userId=${params.userId}&mealType=${params.mealType}`
       )
       .then((res) => {
         setLoading(false);
@@ -173,12 +173,10 @@ const ViewFoodItem = ({ navigation, route }) => {
         setTargetBloodGlucose(
           res?.data?.targetBloodGlucose ? res?.data?.targetBloodGlucose : 0
         )
-        setBloodGlucoseLevelBeforeMeal(
-          res?.data?.bloodGlucoseLevelBeforeMeal ? res?.data?.bloodGlucoseLevelBeforeMeal : 0
-        );
         setUserCRR(res?.data?.userCRR);
         console.log("This is crr")
         console.log(res?.data?.userCRR);
+        console.log("This is blood glucose before meal"+res?.data?.bloodGlucoseBeforeMeal);
         console.log("Data:", res, res?.data ? res?.data?.mealItems : []);
       })
       .catch((e) => {
@@ -195,7 +193,7 @@ const ViewFoodItem = ({ navigation, route }) => {
     setLoading(true);
     await axios
       .put(
-        `https://diabeticapp-backend-dt6j.onrender.com/api/addBloodGlucose`,
+        `https://diabetesapp-backend.onrender.com/api/addBloodGlucose`,
         params
       )
       .then((res) => {
@@ -210,18 +208,22 @@ const ViewFoodItem = ({ navigation, route }) => {
 
   const addBloodGlucoseBeforeMeal = async (data) => {
     let params = {
-      _id: objectId,
-      bloodGlucoseLevelBeforeMeal: data,
+      userId: user?.user?.uid, //set user id because it is not saved
+      mealType: tag,
+      bloodGlucoseBeforeMeal: data,
     };
     setLoading(true);
+    console.log(params.userId+params.mealType+params.bloodGlucoseBeforeMeal+"This the data we are saving for blood glucose")
     await axios
-      .put(
-        `https://diabeticapp-backend-dt6j.onrender.com/api/addBloodGlucoseBeforeMeal`,
+      .post(
+        `https://diabetesapp-backend.onrender.com/api/addBloodGlucoseBeforeMeal`,
         params
       )
       .then((res) => {
+        console.log("Xyz",res);
+        // setBloodGlucoseLevelBeforeMeal(res?.data?.bloodGlucoseBeforeMeal ? res?.data?.bloodGlucoseBeforeMeal : 0);
         setLoading(false);
-        navigation.goBack();
+       navigation.goBack();
       })
       .catch((e) => {
         setLoading(false);
@@ -229,9 +231,39 @@ const ViewFoodItem = ({ navigation, route }) => {
       });
   };
 
+  const getBloodGlucoseBeforeMeal = async () => {
+    let params = {
+      userId: user?.user?.uid,
+      mealType: tag,
+    };
+    setLoading(true);
+    await axios
+      .get(
+        `https://diabetesapp-backend.onrender.com/api/getBloodGlucoseBeforeMeal?userId=${params.userId}&mealType=${params.mealType}`
+      )
+      .then((res) => {
+        setLoading(false);
+        setBloodGlucoseLevelBeforeMeal(
+          res?.data?.bloodGlucoseBeforeMeal ? res?.data?.bloodGlucoseBeforeMeal : 0
+        );
+        console.log("getting data"+ res);
+        console.log("This is blood glucose before meal"+res?.data?.bloodGlucoseBeforeMeal);
+        
+      })
+      .catch((e) => {
+        setLoading(false);
+        console.log("Error : ", e);
+      });
+  };
+
+
+ 
   useEffect(() => {
     getUpdatedUserICR();
     getFoodItems();
+    getBloodGlucoseBeforeMeal();
+    
+  
     
   }, []);
 
@@ -245,7 +277,7 @@ const ViewFoodItem = ({ navigation, route }) => {
   const handleSaveBloodGlucoseBeforeMeal = (data) => {
     addBloodGlucoseBeforeMeal(data);
     setModalVisibleBeforeMeal(false);
-    setBloodGlucoseLevelBeforeMeal(data); 
+    //setBloodGlucoseLevelBeforeMeal(data); 
   };
 
   const getCarbs = (item) => {
@@ -355,7 +387,7 @@ const ViewFoodItem = ({ navigation, route }) => {
                     <AddCarbsModal
                       visible={modalVisibleBeforeMeal}
                       placeholder={"Enter Blood-glusoce reading Before Meal"}
-                      onDismiss={() => setModalVisible(false)}
+                      onDismiss={() => setModalVisibleBeforeMeal(false)}
                       onSave={handleSaveBloodGlucoseBeforeMeal}
                     />
                     {foodItems.length > 0 &&(
@@ -433,7 +465,7 @@ const ViewFoodItem = ({ navigation, route }) => {
 
         </View>
       ) : null}
-      { bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
+      {/* { bloodGlucoseLevelBeforeMeal === 0 && foodItems?.length > 0 && (
         <View style={styles.addGlucose}>
           <TouchableOpacity onPress={() => setModalVisibleBeforeMeal(true)}>
             <Text style={{ fontSize: 20, color: "#1356ba" }}>
@@ -447,7 +479,7 @@ const ViewFoodItem = ({ navigation, route }) => {
         placeholder={"Enter Blood-glusoce reading Before Meal"}
         onDismiss={() => setModalVisible(false)}
         onSave={handleSaveBloodGlucoseBeforeMeal}
-      /> 
+      />  */}
       
       {bloodGlucoseLevel == 0 && foodItems?.length > 0 ? (
         <View style={styles.addGlucose}>

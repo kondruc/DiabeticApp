@@ -70,7 +70,7 @@ const FoodCart = ({ navigation, route }) => {
     };
     console.log("params:", params);
     await axios
-      .post("https://diabeticapp-backend-dt6j.onrender.com/api/submitData", params)
+      .post("https://diabetesapp-backend.onrender.com/api/submitData", params)
       .then(() => {
         console.log("Data submitted successfully.");
         navigation.navigate("HomeScreen");

@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
     };
     await axios
       .get(
-        `https://diabeticapp-backend-dt6j.onrender.com/api/homeScreenCarbDetails?userId=${params.userId}`
+        `https://diabetesapp-backend.onrender.com/api/homeScreenCarbDetails?userId=${params.userId}`
       )
       .then((res) => {
         console.log("Data:", res);
