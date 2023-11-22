@@ -373,8 +373,9 @@ const ViewFoodItem = ({ navigation, route }) => {
   const getCorrectionFactor = () => {
     try {
         console.log("blood glucose level"+bloodGlucoseLevel+"target bg"+targetBloodGlucose+"userCRR"+userCRR);
-         const x = ((bloodGlucoseLevel - targetBloodGlucose)/userCRR);
-         return x;
+        const x = ((bloodGlucoseLevel - targetBloodGlucose)/userCRR);
+        const roundedX = Math.round(x * 2) / 2; // Round to the nearest half
+        return roundedX;
         
       } catch (error) {
         console.log(error);
