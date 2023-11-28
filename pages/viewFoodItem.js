@@ -16,7 +16,7 @@ import {
 import AddCarbsModal from "../ui/addCarbsModel";
 import { firebase } from "../config";
 import { useIsFocused } from '@react-navigation/native';
-import { bloodGlucoseBefore } from "../../DiabeticApp-backend/controller/userCarbsDataController";
+// import { bloodGlucoseBefore } from "../../DiabeticApp-backend/controller/userCarbsDataController";
 
 
 const ViewFoodItem = ({ navigation, route }) => {
@@ -422,11 +422,15 @@ const ViewFoodItem = ({ navigation, route }) => {
                         mode="contained"
                         onPress={() => setModalVisibleBeforeMeal(true)}
                         style={styles.button}
+                        labelStyle={{
+                          fontSize: 12,
+                          fontWeight: "bold"
+                        }}
+
+
                         
                       >
-                        Add Blood Glucose Reading
-                        {' '}
-                        Before Meal
+                        Add Blood Glucose Reading Before Meal
                       </Button>
                         
                       </>
@@ -434,7 +438,7 @@ const ViewFoodItem = ({ navigation, route }) => {
                     )}
                     <AddCarbsModal
                       visible={modalVisibleBeforeMeal}
-                      placeholder={"Enter Blood-glusoce reading Before Meal"}
+                      placeholder={"Enter the reading Before Meal"}
                       onDismiss={() => setModalVisibleBeforeMeal(false)}
                       onSave={handleSaveBloodGlucoseBeforeMeal}
                     />
@@ -446,6 +450,10 @@ const ViewFoodItem = ({ navigation, route }) => {
                     mode="contained"
                     onPress={onAddFood}
                     style={styles.button}
+                    labelStyle={{
+                      fontSize: 12,
+                      fontWeight: "bold"
+                    }}
                   >
                     Add Food Here
                   </Button>
@@ -457,6 +465,10 @@ const ViewFoodItem = ({ navigation, route }) => {
                 mode="contained"
                 onPress={() => setShowSummary(!showSummary)}
                 style={styles.button}
+                labelStyle={{
+                  fontSize: 12,
+                  fontWeight: "bold"
+                }}
               >
                 Summary For Meal
               </Button>
@@ -619,9 +631,10 @@ const styles = StyleSheet.create({
   button: {
     whiteSpace: 'normal',
     marginTop: 16,
-    width: '70%',
+    width: '90%',
     alignSelf: "center",
   },
+  
   listSection: {
     marginBottom: 16,
   },
