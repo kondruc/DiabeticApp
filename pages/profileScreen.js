@@ -296,14 +296,14 @@ const ProfileScreen = ({ navigation }) => {
               {userStateData?.email}
             </Subheading>
             <TextInput
-              label="Enter Weight"
+              label="Enter Weight (kg)"
               style={styles.input}
               value={weight}
               onChangeText={setWeight}
               keyboardType="numeric"
             />
             <TextInput
-              label="Enter Height"
+              label="Enter Height (cm)"
               style={styles.input}
               value={height}
               onChangeText={setHeight}

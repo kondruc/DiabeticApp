@@ -9,6 +9,8 @@ import {
 import { Button, TextInput } from "react-native-paper";
 import { firebase } from "../config";
 import { useDispatch } from "react-redux";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -140,7 +142,8 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAwareScrollView >
+
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.container}>
           <Image source={require("../assets/icon.png")} style={styles.image} />
@@ -168,7 +171,7 @@ export default function LoginScreen({ navigation }) {
           </Button>
 
           <Button
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, }}
             onPress={() => navigation.navigate("Signup")}
           >
             Don't have an account? Register Now
@@ -179,7 +182,7 @@ export default function LoginScreen({ navigation }) {
           </Button>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
   );
 }
 

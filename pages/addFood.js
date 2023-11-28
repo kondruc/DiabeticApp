@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearFoodItemResults } from "../redux/actions/actions";
 import * as actionTypes from "../redux/actions/actionTypes";
 import AddCarbsModal from "../ui/addCarbsModel";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 const AddFood = ({ navigation, route }) => {
   const { isDelete } = route?.params;
@@ -166,6 +168,11 @@ const AddFood = ({ navigation, route }) => {
     setServingCount(count)
   }
   return (
+    <KeyboardAwareScrollView style={{ flex: 1 }}>
+
+    
+
+
     <View style={styles.container}>
       {foodDetails?.fdcId ? (
         <Card style={styles.card}>
@@ -228,6 +235,7 @@ const AddFood = ({ navigation, route }) => {
       <RenderPortal />
       <RenderSucceessMessage />
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 

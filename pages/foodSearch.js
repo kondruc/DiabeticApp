@@ -16,6 +16,8 @@ import {
   fetchFoodItemByIdAPI,
 } from "../redux/actions/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"; // Import KeyboardAwareScrollView
+
 
 const FoodSearch = ({ navigation, route }) => {
   const theme = useTheme();
@@ -127,6 +129,12 @@ const FoodSearch = ({ navigation, route }) => {
   };
 
   return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container(theme)}
+      keyboardShouldPersistTaps="handled"
+      style={{ flex: 1 }}>
+
+      
     <View style={styles.container(theme)}>
       <Searchbar
         placeholder="Search Food Item"
@@ -204,6 +212,7 @@ const FoodSearch = ({ navigation, route }) => {
       ) : null}
       <FAB style={styles.fab} icon="cart" onPress={onCartPress} />
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -211,7 +220,7 @@ export default FoodSearch;
 
 const styles = StyleSheet.create({
   container: (theme) => ({
-    flex: 1,
+    flexGrow: 1,
     padding: 5,
     backgroundColor: theme.colors.background,
   }),
