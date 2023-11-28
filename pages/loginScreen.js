@@ -130,6 +130,11 @@ export default function LoginScreen({ navigation }) {
   };
 
   const forgetPassword = () => {
+    if (!email) {
+      alert("Please enter your email address.");
+      return;
+    }
+  
     firebase
       .auth()
       .sendPasswordResetEmail(email)
@@ -137,7 +142,12 @@ export default function LoginScreen({ navigation }) {
         alert("Password reset email sent");
       })
       .catch((err) => {
-        alert(err);
+        // Handle specific error cases
+        if (err.code === "auth/user-not-found") {
+          alert("User not found. Please check your email address.");
+        } else {
+          alert(err.message); // Display the generic error message
+        }
       });
   };
 
