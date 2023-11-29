@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux";
 import { firebase } from "../config";
 import { TimePickerModal } from "react-native-paper-dates";
 import { useIsFocused } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 const ProfileScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -230,6 +232,9 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
+    <KeyboardAwareScrollView style={{ flex: 1 }}>
+
+    
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <ScrollView contentContainerStyle={[styles.container, { flexGrow: 1 }]}>
         {next ? (
@@ -291,14 +296,14 @@ const ProfileScreen = ({ navigation }) => {
               {userStateData?.email}
             </Subheading>
             <TextInput
-              label="Enter Weight"
+              label="Enter Weight (kg)"
               style={styles.input}
               value={weight}
               onChangeText={setWeight}
               keyboardType="numeric"
             />
             <TextInput
-              label="Enter Height"
+              label="Enter Height (cm)"
               style={styles.input}
               value={height}
               onChangeText={setHeight}
@@ -461,6 +466,8 @@ const ProfileScreen = ({ navigation }) => {
         )}
       </ScrollView>
     </KeyboardAvoidingView>
+
+    </KeyboardAwareScrollView>
   );
 };
 

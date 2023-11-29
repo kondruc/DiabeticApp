@@ -9,6 +9,8 @@ import {
 import { Button, TextInput } from "react-native-paper";
 import { firebase } from "../config";
 import { useDispatch } from "react-redux";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -128,6 +130,11 @@ export default function LoginScreen({ navigation }) {
   };
 
   const forgetPassword = () => {
+    if (!email) {
+      alert("Please enter your email address.");
+      return;
+    }
+  
     firebase
       .auth()
       .sendPasswordResetEmail(email)
@@ -135,12 +142,18 @@ export default function LoginScreen({ navigation }) {
         alert("Password reset email sent");
       })
       .catch((err) => {
-        alert(err);
+        // Handle specific error cases
+        if (err.code === "auth/user-not-found") {
+          alert("User not found. Please check your email address.");
+        } else {
+          alert(err.message); // Display the generic error message
+        }
       });
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAwareScrollView >
+
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.container}>
           <Image source={require("../assets/icon.png")} style={styles.image} />
@@ -168,7 +181,7 @@ export default function LoginScreen({ navigation }) {
           </Button>
 
           <Button
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, }}
             onPress={() => navigation.navigate("Signup")}
           >
             Don't have an account? Register Now
@@ -179,7 +192,7 @@ export default function LoginScreen({ navigation }) {
           </Button>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
   );
 }
 

@@ -3,7 +3,8 @@ import axios from "axios";
 import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
+
 
 const HistoryScreen = () => {
   const [selectedDay, setSelectedDay] = useState(null);
@@ -77,10 +78,14 @@ const HistoryScreen = () => {
                 {data?.mealType} : {data?.totalCarbs} Carbs Taken
               </Text>
               <Text style={styles.selectedDayText}>
-                Insulin Dose Taken : {data?.insulinDose} mmol
+                Insulin Dose Taken : {data?.insulinDose} units
               </Text>
               <Text style={styles.selectedDayText}>
-                Blood Glucose before {data?.mealType} : {data?.bloodGlucoseLevelBeforeMeal} 
+              {data?.bloodGlucoseBeforeMeal > 0 ? (
+                `Blood Glucose before ${data?.mealType} : ${data?.bloodGlucoseBeforeMeal} mmol/L`
+              ) : (
+                `Blood Glucose before ${data?.mealType} : No data available`
+              )}
               </Text>
               <Text style={styles.selectedDayText}>
                 Blood Glucose After {data?.mealType} : {data?.bloodGlucoseLevel} 

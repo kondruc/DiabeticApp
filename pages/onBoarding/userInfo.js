@@ -29,13 +29,13 @@ const UserOnboardingScreen = ({ navigation }) => {
         style={styles.input}
       />
       <TextInput
-        label="Weight"
+        label="Weight (kg)"
         value={weight}
         onChangeText={setWeight}
         style={styles.input}
       />
       <TextInput
-        label="Height"
+        label="Height (cm)"
         value={height}
         onChangeText={setHeight}
         style={styles.input}
